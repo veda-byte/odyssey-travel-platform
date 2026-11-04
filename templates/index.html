@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odyssey OS — Autonomous Travel Intelligence Platform</title>
+  <meta name="description" content="Enterprise Multi-Agent Travel Intelligence Platform powered by LangGraph, MCP, Supervisor Orchestration, and Human-in-the-Loop review.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Ambient cyber-nordic background mesh -->
+  <div class="ambient-grid"></div>
+  <div class="ambient-glow glow-emerald"></div>
+  <div class="ambient-glow glow-cyan"></div>
+
+  <!-- Top System Header -->
+  <header class="top-nav">
+    <div class="nav-inner">
+      <div class="brand-group">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">ODYSSEY<span class="brand-accent">OS</span></span>
+          <span class="brand-tag">v2.4 AUTONOMOUS ENGINE</span>
+        </div>
+      </div>
+
+      <div class="nav-telemetry">
+        <div class="telemetry-pill">
+          <span class="pulse-beacon"></span>
+          <span class="telemetry-text">CLUSTER ONLINE // 5 SPECIALIST AGENTS</span>
+        </div>
+        <button class="nav-reset-btn" onclick="resetSession()" title="Start a fresh planning session">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+            <path d="M3 21v-5h5"/>
+          </svg>
+          <span>New Session</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace Container -->
+  <main class="app-workspace">
+
+    <!-- Hero / Status Banner -->
+    <section class="mission-header">
+      <div class="system-badge">
+        <span class="mono-bullet">◆</span>
+        <span>LANGGRAPH MULTI-AGENT ARCHITECTURE • DISTRIBUTED MCP CLIENT</span>
+      </div>
+      <h1 class="mission-title">Autonomous Travel Intelligence</h1>
+      <p class="mission-subtitle">
+        Orchestrating autonomous specialist agents across flight telemetry, lodging intelligence, 
+        climate forecasting, and fiscal modeling to formulate master-grade expedition itineraries.
+      </p>
+    </section>
+
+    <!-- Expedition Terminal (Planner Card) -->
+    <section class="planner-card">
+      <div class="terminal-bar">
+        <div class="terminal-title">
+          <span class="terminal-dot"></span>
+          <span>EXPEDITION DISPATCH TERMINAL</span>
+        </div>
+        <div class="terminal-mode">
+          <span class="mode-tag">HITL PROTOCOL ACTIVE</span>
+        </div>
+      </div>
+
+      <!-- Inspiration Filter Chips -->
+      <div class="category-filters">
+        <span class="filter-label">Quick Scenarios:</span>
+        <button class="filter-chip active" onclick="switchCategory('curated', this)">✨ Curated Journeys</button>
+        <button class="filter-chip" onclick="switchCategory('alpine', this)">🏔️ Alpine & Nature</button>
+        <button class="filter-chip" onclick="switchCategory('cultural', this)">🏛️ Cultural & Historic</button>
+        <button class="filter-chip" onclick="switchCategory('coastal', this)">🌊 Coastal & Leisure</button>
+      </div>
+
+      <!-- Quick Prompt Suggestions (Dynamic based on category) -->
+      <div id="quickPromptsContainer" class="quick-prompts">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Prompt Input Console -->
+      <div class="input-console">
+        <div class="textarea-wrapper">
+          <textarea
+            id="userInput"
+            rows="4"
+            placeholder="Describe your expedition: origin, destination, duration, budget, travel style, and preferences..."
+          ></textarea>
+          <div class="textarea-footer">
+            <span class="shortcut-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to Dispatch</span>
+            <span id="charCount" class="char-count">0 characters</span>
+          </div>
+        </div>
+
+        <button id="sendBtn" class="dispatch-btn" onclick="sendMessage()">
+          <span id="btnText" class="btn-inner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>Dispatch Pipeline</span>
+          </span>
+          <span id="btnLoader" class="loader hidden"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Supervisor & Multi-Agent Telemetry Section -->
+    <section id="workflowSection" class="workflow-section hidden">
+      <div class="telemetry-header">
+        <div class="telemetry-title-group">
+          <span class="eyebrow">MISSION CONTROL TELEMETRY</span>
+          <h2>Supervisor Orchestration & Guardrail Audit</h2>
+        </div>
+        <div class="telemetry-badges">
+          <span id="guardrailBadge" class="guardrail-badge">
+            <span class="badge-icon">🛡️</span>
+            <span id="guardrailText">Zero-Trust Guardrail: Verified</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="supervisor-card">
+        <div class="supervisor-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+        </div>
+        <div class="supervisor-content">
+          <span class="supervisor-label">Supervisor Routing Rationale</span>
+          <p id="supervisorReasoning" class="supervisor-reasoning">Awaiting pipeline execution...</p>
+        </div>
+      </div>
+
+      <!-- Active Specialist Agents Grid -->
+      <div class="agent-roster-header">
+        <span class="eyebrow">SPECIALIST AGENT STATUS MATRIX</span>
+      </div>
+      <div id="agentChips" class="agent-chips">
+        <!-- Dynamically rendered specialist agent cards -->
+      </div>
+    </section>
+
+    <!-- Itinerary Dossier Presentation Section -->
+    <section id="resultSection" class="result-section hidden">
+      <div class="result-header">
+        <div class="result-title-group">
+          <div class="dossier-tag">SYNTHESIZED EXPEDITION DOSSIER</div>
+          <h2 id="resultTitle">Comprehensive AI Travel Plan</h2>
+          <div class="thread-meta">
+            <span class="mono-label">SESSION THREAD:</span>
+            <span id="threadInfo" class="thread-id">-</span>
+          </div>
+        </div>
+
+        <div class="result-controls">
+          <button class="action-btn copy-btn" onclick="copyResult()" title="Copy Markdown to Clipboard">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copyBtnText">Copy Markdown</span>
+          </button>
+          <button class="action-btn download-btn" onclick="downloadPDF()" title="Export Executive PDF Dossier">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span id="downloadBtnText">Export Executive PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dossier Sub-Navigation Tabs -->
+      <div class="dossier-tabs">
+        <button class="dossier-tab active" onclick="switchDossierTab('itinerary', this)">
+          <span>📑 Master Itinerary</span>
+        </button>
+        <button class="dossier-tab" onclick="switchDossierTab('feeds', this)">
+          <span>⚡ Agent Intelligence Feeds</span>
+        </button>
+        <button class="dossier-tab" onclick="switchDossierTab('constraints', this)">
+          <span>🎯 Trip Parameters</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: Master Itinerary (PDF printable container) -->
+      <div id="pdfContent" class="pdf-content">
+        <div class="pdf-header-print">
+          <div class="print-brand">ODYSSEY OS // EXECUTIVE EXPEDITION DOSSIER</div>
+          <div class="print-sub">Generated by LangGraph Multi-Agent Architecture</div>
+        </div>
+        <h1 class="pdf-title">Expedition Itinerary Dossier</h1>
+        <div id="resultBox" class="result-box"></div>
+      </div>
+
+      <!-- Tab 2: Agent Intelligence Feeds -->
+      <div id="agentFeedsContent" class="agent-feeds-content hidden">
+        <div class="feeds-grid">
+          <div class="feed-card" id="flightFeedCard">
+            <div class="feed-card-header">
+              <span class="feed-icon">✈️</span>
+              <h4>Aviation & Flights Telemetry</h4>
+            </div>
+            <div class="feed-card-body" id="flightFeedBody">No flight data retrieved for this plan.</div>
+          </div>
+          <div class="feed-card" id="hotelFeedCard">
+            <div class="feed-card-header">
+              <span class="feed-icon">🏨</span>
+              <h4>Lodging & Stays Intelligence</h4>
+            </div>
+            <div class="feed-card-body" id="hotelFeedBody">No hotel recommendations retrieved for this plan.</div>
+          </div>
+          <div class="feed-card" id="weatherFeedCard">
+            <div class="feed-card-header">
+              <span class="feed-icon">🌦️</span>
+              <h4>Meteorological & Climate Analysis</h4>
+            </div>
+            <div class="feed-card-body" id="weatherFeedBody">No meteorological forecast retrieved for this plan.</div>
+          </div>
+          <div class="feed-card" id="budgetFeedCard">
+            <div class="feed-card-header">
+              <span class="feed-icon">💰</span>
+              <h4>Fiscal Audit & Cost Breakdown</h4>
+            </div>
+            <div class="feed-card-body" id="budgetFeedBody">No budget analysis retrieved for this plan.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Trip Parameters & Constraints -->
+      <div id="tripConstraintsContent" class="trip-constraints-content hidden">
+        <div class="constraints-grid" id="constraintsGrid">
+          <div class="constraint-pill">
+            <span class="constraint-label">Target Destination</span>
+            <span class="constraint-val" id="cTargetDest">Extracted from prompt</span>
+          </div>
+          <div class="constraint-pill">
+            <span class="constraint-label">Origin Point</span>
+            <span class="constraint-val" id="cOrigin">Extracted from prompt</span>
+          </div>
+          <div class="constraint-pill">
+            <span class="constraint-label">Trip Duration</span>
+            <span class="constraint-val" id="cDuration">Extracted from prompt</span>
+          </div>
+          <div class="constraint-pill">
+            <span class="constraint-label">Allocated Budget</span>
+            <span class="constraint-val" id="cBudget">Extracted from prompt</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Human-in-the-Loop Review Console -->
+    <section id="approvalSection" class="approval-section hidden">
+      <div class="approval-header">
+        <div class="approval-beacon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="approval-header-text">
+          <span class="checkpoint-tag">HITL PROTOCOL // HUMAN VERIFICATION CHECKPOINT</span>
+          <h2>Review & Authorize Itinerary Draft</h2>
+          <p id="approvalRequest">
+            The supervisor agent has paused execution at the Human-in-the-Loop checkpoint. 
+            Review the drafted itinerary above, then authorize finalization or request specific revisions.
+          </p>
+        </div>
+      </div>
+
+      <div class="approval-body">
+        <div class="quick-refinement-group">
+          <span class="refinement-label">Quick Revision Suggestions:</span>
+          <div class="refinement-chips">
+            <button class="refinement-chip" onclick="insertFeedback('Optimize accommodation costs to preserve more budget for experiences.')">📉 Lower Hotel Budget</button>
+            <button class="refinement-chip" onclick="insertFeedback('Insert dedicated leisure half-days with unscheduled free exploration.')">☕ Add Leisure Days</button>
+            <button class="refinement-chip" onclick="insertFeedback('Prioritize scenic high-speed train routes over short-haul flights.')">🚆 Prefer Train Routes</button>
+            <button class="refinement-chip" onclick="insertFeedback('Include authentic local culinary tours and street food hotspots.')">🍜 Authentic Dining</button>
+          </div>
+        </div>
+
+        <textarea
+          id="approvalFeedback"
+          class="feedback-input"
+          placeholder="Specify exact modifications (e.g. swap day 3 excursions, reduce hotel tier, or add private day trips)..."
+        ></textarea>
+
+        <div class="approval-actions">
+          <button id="approveBtn" class="approve-btn" onclick="submitApproval(true)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Authorize & Finalize Dossier</span>
+          </button>
+          <button id="reviseBtn" class="revise-btn" onclick="submitApproval(false)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2v6h-6"></path>
+              <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+              <path d="M3 22v-6h6"></path>
+              <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+            </svg>
+            <span>Request Specialist Revision</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error Toast Notification -->
+    <div id="errorBox" class="error-toast hidden">
+      <div class="toast-icon">⚠️</div>
+      <div class="toast-content" id="errorText">An error occurred.</div>
+      <button class="toast-close" onclick="hideError()">✕</button>
+    </div>
+
+  </main>
+
+  <!-- Executive Footer -->
+  <footer class="system-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="footer-brand">ODYSSEY OS</span>
+        <span class="footer-sep">|</span>
+        <span class="footer-desc">Autonomous Multi-Agent Travel Intelligence Architecture</span>
+      </div>
+      <div class="footer-right">
+        <span class="tech-badge">LangGraph 0.2</span>
+        <span class="tech-badge">FastAPI</span>
+        <span class="tech-badge">Model Context Protocol</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="/static/script.js"></script>
+</body>
+</html>
